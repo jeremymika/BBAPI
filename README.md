@@ -5,6 +5,22 @@ Since Linux Kernel 5.8 it is not possible to dynamically load a Kernel module wh
 Therefore the BBAPI doesn't work as a loadable Kernel module anymore. 
 If you want to use it with Kernel Version>=5.8 you need to compile your own kernel and statically compile the BBAPI into your kernel.
 
+Download the kernel source for your kernel.
+Move the `BBAPI` folder into `<kernel source>/kernel/`
+Add the following line to `<kernel source>/kernel/Makefile`:
+
+```
+obj-y += BBAPI/
+```
+
+Build the kernel and install. This should give you a working `/dev/bbapi` device on bootup.
+
+The other kernel modules are a little easier, but I had to do something kludgy to get it to work for me (in a Xenomai kernel).
+
+For most, simply go into that BBAPI folder and run `make install` to build the other modules for button, display, power, sups and wdt.
+
+
+
 ### General information about BBAPI
 The “BIOS-API” is a piece of software which is part of the BIOS in Beckhoff industrial motherboards. 
 It offers a one-stop solution for communicating with several components on the board, 
