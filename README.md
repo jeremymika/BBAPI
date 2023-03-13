@@ -5,6 +5,8 @@ Since Linux Kernel 5.8 it is not possible to dynamically load a Kernel module wh
 Therefore the BBAPI doesn't work as a loadable Kernel module anymore. 
 If you want to use it with Kernel Version>=5.8 you need to compile your own kernel and statically compile the BBAPI into your kernel.
 
+This was tested on Linux Kernel 5.15 in both vanilla and Xenomai 3.2 flavors.
+
 Download the kernel source for your kernel.
 Move the `BBAPI` folder into `<kernel source>/kernel/`
 Add the following line to `<kernel source>/kernel/Makefile`:
