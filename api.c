@@ -18,6 +18,11 @@
 #include <linux/vmalloc.h>
 #include <generated/utsrelease.h>
 #include <asm/io.h>
+
+// Linux 5.8+
+#include <asm/set_memory.h>
+#include <linux/mm.h>
+
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(4,12,0))
 #include <asm/uaccess.h>
 #else
@@ -178,11 +183,18 @@ static int __init bbapi_copy_bios(struct bbapi_object *bbapi,
 {
 	const uint32_t offset = ioread32(pos + 8);
 	const size_t size = offset + 4096;
-	bbapi->memory = __vmalloc(size, GFP_KERNEL, PAGE_KERNEL_EXEC);
+	bbapi->memory = vmalloc(size);
 	if (bbapi->memory == NULL) {
-		pr_info("__vmalloc for Beckhoff BIOS API failed\n");
+		pr_info("vmalloc for Beckhoff BIOS API failed\n");
 		return -ENOMEM;
 	}
+	
+	if (set_memory_x((unsigned long) bbapi->memory, size >> PAGE_SHIFT)) {
+		pr_info("failed to set memory executable\n");
+		vfree(bbapi->memory);
+		return -EFAULT;
+	}
+	
 	memcpy_fromio(bbapi->memory, pos, size);
 	bbapi->entry = bbapi->memory + offset;
 	return 0;
