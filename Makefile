@@ -1,6 +1,6 @@
 TARGET = bbapi
 EXTRA_DIR = /lib/modules/$(shell uname -r)/extra/
-obj-m += $(TARGET).o
+obj-y += $(TARGET).o
 $(TARGET)-objs := api.o simple_cdev.o
 SUBDIRS := $(filter-out scripts/., $(wildcard */.))
 KDIR ?= /lib/modules/$(shell uname -r)/build
